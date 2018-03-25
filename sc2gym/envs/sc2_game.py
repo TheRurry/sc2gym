@@ -41,7 +41,7 @@ class SC2GameEnv(gym.Env):
         self._episode_reward = 0
         self._total_reward = 0
 
-    def _step(self, action):
+    def step(self, action):
         return self._safe_step(action)
 
     def _safe_step(self, action):
@@ -63,7 +63,7 @@ class SC2GameEnv(gym.Env):
         self._total_reward += reward
         return obs, reward, obs.step_type == StepType.LAST, {}
 
-    def _reset(self):
+    def reset(self):
         if self._env is None:
             self._init_env()
         if self._episode > 0:
@@ -85,14 +85,14 @@ class SC2GameEnv(gym.Env):
     def _init_env(self):
         self._env = sc2_env.SC2Env(**self._kwargs)
 
-    def _close(self):
+    def close(self):
         if self._episode > 0:
             logger.info("Episode %d ended with reward %d after %d steps.",
                         self._episode, self._episode_reward, self._num_step)
             logger.info("Got %d total reward, with an average reward of %g per episode",
                         self._total_reward, float(self._total_reward) / self._episode)
         self._env.close()
-        super()._close()
+        super().close()
 
     @property
     def settings(self):
